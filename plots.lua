@@ -413,7 +413,7 @@ function curve(model)
       local p0x,p1x,p2x,p3x=cubicfit(t0,t1,n+1,xs)
       local p0y,p1y,p2y,p3y=cubicfit(t0,t1,n+1,ys)
       for i=1,n do
-	 spline[#spline+1]={ type="bezier",
+	 spline[#spline+1]={ type="spline",
 	 trans*ipe.Vector(p0x[i], p0y[i]),
 	 trans*ipe.Vector(p1x[i], p1y[i]),
 	 trans*ipe.Vector(p2x[i], p2y[i]),
@@ -615,7 +615,7 @@ function func_plot(model)
       local h=tlen/n
       local t=t0
       for i=1,n do
-	 spline[#spline+1]={ type="bezier",
+	 spline[#spline+1]={ type="spline",
 	 trans*ipe.Vector(t, p0[i]),
 	 trans*ipe.Vector(t+h/3, p1[i]),
 	 trans*ipe.Vector(t+2*h/3, p2[i]),
