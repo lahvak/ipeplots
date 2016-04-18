@@ -66,7 +66,7 @@ about = [[
 Parametric curves, plots of functions, coordinate systems
 ]]
 
--- we will prepend this every time we use loadstring, so user does not have to
+-- we will prepend this every time we use load, so user does not have to
 -- type math.foo for foo all the time:
 local mathdefs = [[
    local abs = math.abs;
@@ -96,6 +96,11 @@ local mathdefs = [[
    local tanh = math.tanh;
    local range = ipeplot_tick_range;
    ]]
+
+local beziername = "spline"
+if _G.config.version < "7.1.7" then
+  beziername = "bezier"
+end
 
 -- some auxiliary functions:
 -- 1) tick generators
@@ -160,7 +165,7 @@ local function get_number (model, string, error_msg)
       return
    end
    lstring = mathdefs .. "return " .. string
-   local f,err = _G.loadstring(lstring,error_msg)
+   local f,err = _G.load(lstring,error_msg)
    if not f then
       model:warning("Could not compile " .. error_msg)
       return
@@ -382,7 +387,7 @@ function curve(model)
                   .. "return function (t) local v = ipe.Vector(" 
 		  .. coordstr 
 		  .. "); return v end"
-   local f,err = _G.loadstring(coordstr,"parametric_plot")
+   local f,err = _G.load(coordstr,"parametric_plot")
    if not f then
       model:warning("Could not compile coordinate functions")
       return
@@ -413,7 +418,7 @@ function curve(model)
       local p0x,p1x,p2x,p3x=cubicfit(t0,t1,n+1,xs)
       local p0y,p1y,p2y,p3y=cubicfit(t0,t1,n+1,ys)
       for i=1,n do
-	 spline[#spline+1]={ type="spline",
+	 spline[#spline+1]={ type=beziername,
 	 trans*ipe.Vector(p0x[i], p0y[i]),
 	 trans*ipe.Vector(p1x[i], p1y[i]),
 	 trans*ipe.Vector(p2x[i], p2y[i]),
@@ -556,7 +561,7 @@ function func_plot(model)
 	         .. coordstr 
 		 .. "); return v end"
    -- attempt to load this string.  Give a warning and quit if it fails.
-   local f,err = _G.loadstring(coordstr,"function plot")
+   local f,err = _G.load(coordstr,"function plot")
    if not f then
       model:warning(err) -- bug: error messages will be cryptic
       return
@@ -615,7 +620,7 @@ function func_plot(model)
       local h=tlen/n
       local t=t0
       for i=1,n do
-	 spline[#spline+1]={ type="spline",
+	 spline[#spline+1]={ type=beziername,
 	 trans*ipe.Vector(t, p0[i]),
 	 trans*ipe.Vector(t+h/3, p1[i]),
 	 trans*ipe.Vector(t+2*h/3, p2[i]),
@@ -725,7 +730,7 @@ function make_axes(model, num)
    if xtickstore and (xtickstore ~= "") then
       local tickliststr = mathdefs .. "return {" .. xtickstore .. "}"
       -- attempt to load this string.  Give a warning and quit if it fails.
-      local f,err = _G.loadstring(tickliststr,"x-ticks")
+      local f,err = _G.load(tickliststr,"x-ticks")
       if not f then
 	 model:warning(err) -- bug: error messages will be cryptic
 	 return
@@ -756,7 +761,7 @@ function make_axes(model, num)
    if ytickstore and (ytickstore ~= "") then
       local tickliststr = mathdefs .. "return {" .. ytickstore .. "}"
       -- attempt to load this string.  Give a warning and quit if it fails.
-      local f,err = _G.loadstring(tickliststr,"y-ticks")
+      local f,err = _G.load(tickliststr,"y-ticks")
       if not f then
 	 model:warning(err) -- bug: error messages will be cryptic
 	 return
