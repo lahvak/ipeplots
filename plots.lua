@@ -278,10 +278,10 @@ function curve(model)
    d:add("label12", "label", {label="number of points"}, nxt(), 1, 1, 1)
    d:add("points", "input", {}, same(), 2, 1, 1)
    d:add("cubic", "checkbox", {label="use cubic splines"}, nxt(), 1, 1, 1)
-   d:add("ok", "button", {label="&Ok", action="accept"}, nxt(), 4)
-   d:add("cancel", "button", {label="&Cancel", action="reject"}, same(), 3)
+   d:addButton("ok", "&Ok", "accept")
+   d:addButton("cancel", "&Cancel", "reject")
    d:setStretch("column", 2, 1)
-   d:setStretch("row", 5, 1)
+   d:setStretch("column", 4, 1)   
    if xeqstore then d:set("xeq",xeqstore) end
    if yeqstore then d:set("yeq",yeqstore) end
    if has_viewport then
@@ -453,10 +453,10 @@ function func_plot(model)
    d:add("label12", "label", {label="number of points"}, nxt(), 1, 1, 1)
    d:add("points", "input", {}, same(), 2, 1, 1)
    d:add("cubic", "checkbox", {label="use cubic splines"}, nxt(), 1, 1, 1)
-   d:add("ok", "button", {label="&Ok", action="accept"}, nxt(), 4)
-   d:add("cancel", "button", {label="&Cancel", action="reject"}, same(), 3)
+   d:addButton("ok", "&Ok", "accept")
+   d:addButton("cancel", "&Cancel", "reject")
    d:setStretch("column", 2, 1)
-   d:setStretch("row", 5, 1)
+   d:setStretch("column", 4, 1)   
    if fstore then d:set("xeq",fstore) end
    if has_viewport then
       if x0store then d:set("xfrom",x0store) end
@@ -656,10 +656,10 @@ function make_axes(model, num)
       d:add("label85", "label", {label="Locations of horizontal grid lines:"},nxt(),1,1,1)
       d:add("yticklist", "input", {}, same(), 2, 1, 3)
    end
-   d:add("ok", "button", {label="&Ok", action="accept"}, nxt(), 4)
-   d:add("cancel", "button", {label="&Cancel", action="reject"}, same(), 3)
+   d:addButton("ok", "&Ok", "accept")
+   d:addButton("cancel", "&Cancel", "reject")
    d:setStretch("column", 2, 1)
-   d:setStretch("row", 5, 1)
+   d:setStretch("column", 4, 1)
    if x0store then d:set("xfrom",x0store) end
    if x1store then d:set("xto",x1store) end
    if y0store then d:set("yfrom",y0store) end
