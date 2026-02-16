@@ -14,8 +14,7 @@
 \maketitle
 \tableofcontents
 \begin{abstract}
-   IpePlots is an extension (so called ``ipelet'') for the graphics editor \Ipe\
-   (\url{http://ipe7.sourceforge.net}).  The purpose of this extension is to
+   IpePlots is an extension (so called ``ipelet'') for the graphics editor \Ipe\ \cite{ipeweb}.  The purpose of this extension is to
    make creation of plots of functions, especially the type of plots used in
    mathematics education, easier.  We provide basic introduction to IpePlots,
    as well as several step by step examples. 
@@ -24,7 +23,7 @@
 \section{Introduction}
 The \Ipe\ graphics editor, written by Otfried Cheong, is a drawing editor for
 creating figures in PDF or encapsulated PostScript format. According to the Ipe
-website\cite{ipeweb}, its main features are:
+website \cite{ipeweb}, its main features are:
 \begin{itemize}
    \item Entry of text as \LaTeX\ source code. This makes it easy to enter
       mathematical expressions, and to reuse the \LaTeX-macros of the main
@@ -40,13 +39,13 @@ website\cite{ipeweb}, its main features are:
    \item  \Ipe\ is written in standard C++ and Lua 5.1. 
 \end{itemize}
 IpePlots is a plotting extension for the \Ipe. Its can help you include plots
-of functions, parametric curves and coordinate systems into your \Ipe\
+of functions, tabulated data, parametric curves and coordinate systems into your \Ipe\
 drawings.  IpePlots is written in Lua 5.1.  It is released under the GPL v.2.0.
 
 \section{Installation}
 
 We will assume that you already have the \Ipe\ graphics editor installed on
-your computer.  You can obtain the editor from the \Ipe\ webpage\cite{ipeweb}. 
+your computer.  You can obtain the editor from the \Ipe\ webpage \cite{ipeweb}. 
 
 Installation of IpePlots is very simple.  All you have to do is to place the
 file \texttt{plots.lua} in the ``ipelets'' directory on your computer.  On Unix
@@ -58,7 +57,7 @@ sub-menu under \Ipe's ``Ipelets'' menu (Figure~\ref{fig:ipewindow}).
 \begin{figure}[h]
    \begin{center}
       %\includegraphics{ipewindow_small.png}
-      \includegraphics[scale=3]{ipewindow.png}
+      \includegraphics[width=0.7\textwidth]{ipewindow.png}
    \end{center}
    \caption{\Ipe\ window with the ``Plots'' sub-menu open}
    \label{fig:ipewindow}
@@ -79,8 +78,9 @@ version of IpePlots, there are four items:
    \item[Parametrid plot] will insert a parametric curve defined by two
       functions, $x = f(t)$ and $y = g(t)$.
    \item[Function plot] will insert a plot of a function $y = f(x)$. 
+   \item[Data plot] will plot your data saved in a data file (\texttt{.csv} or alike).
 \end{description}
-Depending of several things, IpePlots will do one of the following:
+Depending on several things, IpePlots will do one of the following:
 \begin{itemize}
    \item If your current selection has a non-empty bounding box, IpePlot will
       use this bounding box as a ``viewport'' which will contain the coordinate
@@ -113,7 +113,7 @@ coordinates).
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{coord_sys_dialog.png}
+      \includegraphics[width=0.7\textwidth]{coord_sys_dialog.png}
    \end{center}
    \caption{Dialog box for the Coordinate System}
    \label{fig:coord_sys_dialog}
@@ -130,7 +130,7 @@ numbers.  For example, IpePlots provides an internal function
 \texttt{range(from, to, step)} which produces a table of numbers starting with
 the value of ``\texttt{from}'' and incrementing by ``\texttt{step}'' until it
 exceeds ``\texttt{to}''.  The values entered in the
-Figure~\ref{fig:coord_sys_dialog} will produced the coordinate system in
+Figure~\ref{fig:coord_sys_dialog} will produce the coordinate system in
 Figure~\ref{fig:coord_sys}. Note that the rectangle containing the coordinate
 system was not created by IpePlots.  It was already present in the drawing, and
 we selected it before using IpePlots.  The coordinate system was created by
@@ -146,7 +146,7 @@ rectangle. The rectangle can be deleted after the coordinate system is created.
 \end{figure}
 
 Also note that IpePlots does not create labels.  We see that as an advantage.
-IpePlots will quickly create a axes system for you, and you can then label it
+IpePlots will quickly create an axes system for you, and you can then label it
 in any way you want, IpePlots will not impose any labeling style on you. \Ipe's
 vertex snapping mode  and the ``align'' and ``move'' ipelet groups can be very
 helpful when adding labels. 
@@ -167,7 +167,7 @@ of vertical and horizontal grid lines.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{coord_grid_dialog.png}
+      \includegraphics[width=0.7\textwidth]{coord_grid_dialog.png}
    \end{center}
    \caption{Dialog box for the Coordinate System}
    \label{fig:coord_grid_dialog}
@@ -214,7 +214,7 @@ the bounding box.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{param_dialog.png}
+      \includegraphics[width=0.7\textwidth]{param_dialog.png}
    \end{center}
    \caption{Dialog box for the Parametric Plot}
    \label{fig:param_dialog}
@@ -240,7 +240,7 @@ exactly represent the coordinate rectangle $-1.2\le x \le 1.2$, $-1.2\le y \le
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=.7]{param}
+      \includegraphics[width=0.7\textwidth]{param}
    \end{center}
    \caption{An example of a parametric plot produced by IpePlots.}
    \label{fig:param}
@@ -257,7 +257,7 @@ semicircles.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=.5]{spliced_curve}
+      \includegraphics[width=0.7\textwidth]{spliced_curve}
    \end{center}
    \caption{An example of a curve created by combining a parametric curve in
    absolute canvas coordinates with two semicircles.}
@@ -272,7 +272,7 @@ example of plotting a graph of a function with a vertical asymptote.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{function_dialog.png}
+      \includegraphics[width=0.7\textwidth]{function_dialog.png}
    \end{center}
    \caption{Dialog box for the Function Plot}
    \label{fig:function_dialog}
@@ -289,7 +289,7 @@ line segments or cubic splines to approximate the curve.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=.5]{function}
+      \includegraphics[width=0.7\textwidth]{function}
    \end{center}
    \caption{An example of a graph of a function produced by IpePlots.}
    \label{fig:function}
@@ -297,6 +297,57 @@ line segments or cubic splines to approximate the curve.
 
 The graph created from the parameters entered in
 Figure~\ref{fig:function_dialog} is shown in Figure~\ref{fig:function}. As
+before, the rectangle containing the graph was not created by IpePlots,
+instead it was used as a bounding box to fit the graph into. 
+
+\subsection{Data Plot}
+creates a graph of your data stored in a data file of a \texttt{.csv} type.
+IpePlots assume that the file contains data arranged to columns such that one (not necessarily the first) column stores the $x$ data and another (not necessarily the second) column stores the $y$ data.
+
+\begin{figure}[h]
+   \begin{center}
+      \includegraphics[scale=0.4]{data_dialog.png}
+   \end{center}
+   \caption{Dialog box for the Data Plot}
+   \label{fig:data_dialog}
+\end{figure}
+
+The dialog box for the Data Plot is shown in Figure~\ref{fig:data_dialog}.  
+In this dialog, you first need to specify the data source.
+Two file types were originally considered:
+\begin{itemize}
+   \item \texttt{.csv} file -- columns are separated by commas $\rightarrow$ use ``\texttt{,}'' as the column separator;
+   \item data files where columns are separated by blank characters, such as whitespace or tab $\rightarrow$ use ``\texttt{\%s}'' as the column separator.
+\end{itemize}
+If the data file contains commented lines that you want IpePlot to skip, you can specify one (!) character that marks the beginning of the comment.
+You also have to specify which column contains the $x$ data and which column contains the $y$ data.
+
+The viewport setting is the same as in the previous plot types.
+If the current selection is empty or has an empty bounding box, the limits for the bounding box will not be present in the dialog.
+
+Finally, you can choose if you want to plot your data as points only, as connected points or as lines or splines.
+If the box \texttt{connect points} is checked, the connections between adjacent data points will be drawn as straight lines (if \texttt{use cubic splines} is NOT checked) or as splines (if \texttt{use cubic splines} IS checked).
+If the box \texttt{connect points} is not checked, (un)checking the box \texttt{use cubic splines} has no effect.
+Note also that cubic splines may not be a good approximation of your data, especially when they are not reasonably equally spaced.
+If the box \texttt{use symbols} is checked, data will be plotted as symbols.
+You can choose the symbol type from you current stylesheet(s) using the drop-down list. 
+The symbol type selected globally in the \Ipe\ side panel does not have any effect during creation of the Data Plot, but can affect the plot once it has been created.
+
+All objects created at once are grouped together in an \Ipe\ group.
+You can ungroup them from the drop-down menu when right-clicking on the created plot.
+If you, for example, want to have one group for data points and another for the connecting polyline/spline, you must create them separately by calling Data Plot twice.
+
+
+\begin{figure}[h]
+   \begin{center}
+      \includegraphics[width=0.7\textwidth]{data_plot}
+   \end{center}
+   \caption{An example of a graph of data produced by IpePlots (data source \texttt{example.dat}).}
+   \label{fig:datap}
+\end{figure}
+
+The graph created from the parameters entered in
+Figure~\ref{fig:data_dialog} is shown in Figure~\ref{fig:datap}. As
 before, the rectangle containing the graph was not created by IpePlots,
 instead it was used as a bounding box to fit the graph into. 
 
@@ -325,7 +376,7 @@ rectangle is shown in {\color{red}red}, which means that it is currently
 selected. 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=2]{piecewise_starting_rectangle.png}
+      \includegraphics[width=0.7\textwidth]{piecewise_starting_rectangle.png}
    \end{center}
    \caption{A rectangle with $5:4$ side ratio}
    \label{fig:piecewise_starting_rectangle}
@@ -339,7 +390,7 @@ rectangle, and create the $x$ and $y$ axes, with 5 pt long ticks at every
 integer (Figure~\ref{fig:piecewise_system}).  
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{piecewise_system_dialog.png}
+      \includegraphics[width=0.7\textwidth]{piecewise_system_dialog.png}
    \end{center}
    \caption{The dialog box for coordinate system}
    \label{fig:piecewise_system_dialog}
@@ -347,7 +398,7 @@ integer (Figure~\ref{fig:piecewise_system}).
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=2]{piecewise_system.png}
+      \includegraphics[width=0.7\textwidth]{piecewise_system.png}
    \end{center}
    \caption{The coordinate system created by the dialog box in
    Figure~\ref{fig:piecewise_system_dialog}} 
@@ -368,7 +419,7 @@ dashed style using the \Ipe\ properties panel.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{piecewise_grid_dialog.png}
+      \includegraphics[width=0.7\textwidth]{piecewise_grid_dialog.png}
    \end{center}
    \caption{The dialog for creation of a coordinate grid}
    \label{fig:piecewise_grid_dialog}
@@ -376,7 +427,7 @@ dashed style using the \Ipe\ properties panel.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=2]{piecewise_grid.png}
+      \includegraphics[width=0.7\textwidth]{piecewise_grid.png}
    \end{center}
    \caption{The coordinate grid created by the dialog box in
    Figure~\ref{fig:piecewise_grid_dialog}}
@@ -398,7 +449,7 @@ Figure~\ref{fig:firstline}.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{firstline_dialog.png}
+      \includegraphics[width=0.7\textwidth]{firstline_dialog.png}
    \end{center}
    \caption{The dialog box that will create the first part of the plot: $y =
    x+5$ for $x < -2$}
@@ -407,7 +458,7 @@ Figure~\ref{fig:firstline}.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=2]{firstline.png}
+      \includegraphics[width=0.7\textwidth]{firstline.png}
    \end{center}
    \caption{The first part of the plot of the piecewise function}
    \label{fig:firstline}
@@ -428,7 +479,7 @@ the plot with the first two parts present.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=3]{secondline_dialog.png}
+      \includegraphics[width=0.7\textwidth]{secondline_dialog.png}
    \end{center}
    \caption{The dialog box for the second part of the plot of the piecewise
    function $f$}
@@ -437,7 +488,7 @@ the plot with the first two parts present.
 
 \begin{figure}[h]
    \begin{center}
-      \includegraphics[scale=2]{secondline.png}
+      \includegraphics[scale=4]{secondline.png}
    \end{center}
    \caption{Plot of the first two parts of the piecewise function $f$}
    \label{fig:secondline}
@@ -454,7 +505,7 @@ Figure~\ref{fig:piecewise}.
    \begin{center}
       \includegraphics[scale=.7]{piecewise.pdf}
    \end{center}
-   \caption{Graph of the piece wise function $f$}
+   \caption{Graph of the piece wise function $f$.}
    \label{fig:piecewise}
 \end{figure}
 \clearpage

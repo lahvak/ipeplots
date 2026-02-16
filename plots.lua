@@ -63,7 +63,7 @@ can be done better.
 label = "Plots"
 
 about = [[
-Parametric curves, plots of functions, coordinate systems
+Parametric curves, plots of functions, plots of tabulated data, coordinate systems
 ]]
 
 -- we will prepend this every time we use load, so user does not have to
@@ -277,7 +277,7 @@ function curve(model)
       d:add("xto", "input", {}, same(), 4, 1, 1)
       d:add("label10", "label", {label="from y="}, nxt(), 1, 1, 1)
       d:add("yfrom", "input", {}, same(), 2, 1, 1)
-      d:add("label11", "label", {label="to y="}, 8, 3, 1, 1)
+      d:add("label11", "label", {label="to y="}, same(), 3, 1, 1)
       d:add("yto", "input", {}, same(), 4, 1, 1)
    end
    d:add("label12", "label", {label="number of points"}, nxt(), 1, 1, 1)
@@ -633,6 +633,269 @@ function func_plot(model)
    model:creation("create graph", graph)
 end
 
+-- plot tabulated data (from file)
+function tab_plot(model)
+   local box = bounding_box(model:page())
+   local has_viewport = not box:isEmpty()
+   local same, nxt = line_counter()
+   local d = ipeui.Dialog(get_dialog_parent(model), "Data Plot")
+
+   -- get symbol names from current stylesheet(s)
+   local sheets = model.doc:sheets()
+   local symbolnames = sheets:allNames("symbol")
+   local marknames = {}
+   for j=1,#symbolnames do
+      if string.find(symbolnames[j], "mark/") then
+         marknames[#marknames+1] = symbolnames[j]
+      end
+   end
+   
+   local dirname 
+   local curname
+   if model.file_name then 
+      dirname = string.match(model.file_name, prefs.dir_pattern)
+      curname = dirname .. "/..."
+   else
+      curname = _G.os.getenv("HOME") .. "/..."
+   end
+   
+   local function file_exists(name)
+      if not name then return false end
+      local f = _G.io.open(name, "r")
+      return f ~= nil and _G.io.close(f)
+   end
+
+   local function extract_dir()
+      local dir
+      if not curname then return nil end
+      if curname then dir = curname:match(prefs.dir_pattern) end
+      if not dir then dir = prefs.save_as_directory end
+      return dir
+   end
+   local function extract_name()
+      local name
+      if not curname then return nil end
+      name = curname:match(prefs.basename_pattern)
+      -- maybe there was no "/" in the file name
+      if not name then name = curname end
+      return name
+   end
+   local function filedialog()
+      local n
+      local fltr
+      local fname = extract_name()
+      if fname == "..." then fname = "" end
+      n, fltr = ipeui.fileDialog(model.ui:win(), "open", "Choose data file:",
+                                 {"CSV (*.csv)", "*.csv", "ALL (*)", "*"},
+                                 extract_dir(), fname, 1)
+      if n then curname = n end
+      d:set("filename", extract_name())
+      if fltr == 1 then d:set("separator", ",") end
+   end
+
+   d:add("label0", "label", {label="Choose data file"}, nxt(), 1, 1, 4)
+   d:add("filename", "input", {}, nxt(), 1, 1, 3)
+   d:setEnabled("filename", false)
+   d:add("choose", "button", {label="C&hoose", action=filedialog}, same(), 4)
+   d:add("label2", "label", {label="column separator ="}, nxt(), 1, 1, 1)
+   d:add("separator", "input", {}, same(), 2, 1, 1)
+   d:add("label3", "label", {label="comment label ="}, same(), 3, 1, 1)
+   d:add("comment", "input", {}, same(), 4, 1, 1)
+   d:add("label4", "label", {label="Choose which columns should be used:"}, 
+         nxt(), 1, 1, 4)
+   d:add("label5", "label", {label="x="}, nxt(), 1)
+   d:add("xeq", "input", {}, same(), 2, 1, 3)
+   d:add("label6", "label", {label="y="}, nxt(), 1)
+   d:add("yeq", "input", {}, same(), 2, 1, 3)
+
+   if has_viewport then
+      d:add("label7", "label", {label="Set coordinates for viewport:"}, nxt(), 1, 1, 4)
+      d:add("label8", "label", {label="from x="}, nxt(), 1, 1, 1)
+      d:add("xfrom", "input", {}, same(), 2, 1, 1)
+      d:add("label9", "label", {label="to x="}, same(), 3, 1, 1)
+      d:add("xto", "input", {}, same(), 4, 1, 1)
+      d:add("label10", "label", {label="from y="}, nxt(), 1, 1, 1)
+      d:add("yfrom", "input", {}, same(), 2, 1, 1)
+      d:add("label11", "label", {label="to y="}, same(), 3, 1, 1)
+      d:add("yto", "input", {}, same(), 4, 1, 1)
+   end
+   -- d:add("label12", "label", {label="number of points"}, nxt(), 1, 1, 1)
+   -- d:add("points", "input", {}, same(), 2, 1, 1)
+   d:add("lines", "checkbox", {label="connect points"}, nxt(), 1, 1, 1)
+   d:add("cubic", "checkbox", {label="use cubic splines"}, same(), 2, 1, 1)
+   d:add("symbols", "checkbox", {label="use symbols"}, same(), 3, 1, 1)
+   d:add("markcombo", "combo", marknames, same(), 4, 1, 1)
+   d:addButton("ok", "&Ok", "accept")
+   d:addButton("cancel", "&Cancel", "reject")
+   d:setStretch("column", 2, 1)
+   d:setStretch("column", 4, 1)  
+   if filestore then 
+      curname = filestore
+      d:set("filename", extract_name()) 
+   end
+   d:set("separator", "%s")
+   d:set("comment", "#")
+   if sepstore then d:set("separator", sepstore) end
+   if comstore then d:set("comment", comstore) end
+   d:set("xeq", 1)
+   d:set("yeq", 2) 
+   if xeqstore then d:set("xeq",xeqstore) end
+   if yeqstore then d:set("yeq",yeqstore) end
+   if has_viewport then
+      if x0store then d:set("xfrom",x0store) end
+      if x1store then d:set("xto",x1store) end
+      if y0store then d:set("yfrom",y0store) end
+      if y1store then d:set("yto",y1store) end
+   end
+   if hascubicstore then d:set("cubic",cubicstore) else d:set("cubic",true) end
+   if haslinesstore then d:set("lines",linesstore) else d:set("lines", true) end
+   if hassymbolsstore then d:set("symbols",symbolsstore) else d:set("symbols", false) end
+   if symnamestore then d:set("markcombo",symnamestore) end
+   if not d:execute() then return end
+   local filenm = d:get("filename")
+   filestore = curname
+   local commentchar = d:get("comment")
+   comstore = commentchar
+   local sep = d:get("separator")
+   sepstore = sep
+   local s1 = math.floor(d:get("xeq"))
+   local s2 = math.floor(d:get("yeq"))
+   xeqstore = s1
+   yeqstore = s2
+   if has_viewport then
+      x0store = d:get("xfrom")
+      x1store = d:get("xto")
+      y0store = d:get("yfrom")
+      y1store = d:get("yto")
+   end
+   cubicstore = d:get("cubic")
+   hascubicstore = true
+   linesstore = d:get("lines")
+   haslinesstore = true
+   symbolsstore = d:get("symbols")
+   hassymbolsstore = true
+   symnamesstore = d:get("markcombo")
+
+   -- real coordinates
+   local x0, x1, y0, y1
+   if has_viewport then
+      x0 = get_number(model,x0store,"lower x limit")
+      if not x0 then return end
+      x1 = get_number(model,x1store,"upper x limit")
+      if not x1 then return end
+      y0 = get_number(model,y0store,"lower y limit")
+      if not y0 then return end
+      y1 = get_number(model,y1store,"upper y limit")
+      if not y1 then return end
+   else
+      x0 = 0
+      y0 = 0
+      x1 = 1
+      y1 = 1
+   end
+
+      -- check validity of x and y limits:
+   if x0 > x1 then
+      x0, x1 = x1, x0
+   end
+   if x0 == x1 then
+      model:warning("Limits for x cannot be equal")
+      return
+   end
+   if y0 > y1 then
+      y0, y1 = y1, y0
+   end
+   if y0 == y1 then
+      model:warning("Limits for y cannot be equal")
+      return
+   end
+
+   local trans = calculate_transform(model,x0,y0,x1,y1)
+
+   -- read data from file
+   if not file_exists(curname) then 
+      model:warning("Could not find file " .. filenm)
+      return
+   end
+   local curve = { type="curve", closed=false }
+   local xs,ys={},{}
+   local v1
+   local i = 0
+   local nolines = 0
+   local t = {}
+   local f = _G.io.open(curname,"r")
+   while true do
+      local line = f:read()
+      nolines = nolines + 1
+      local current = f:seek()
+      local iscom = false
+      if line == nil then break end -- end of file reached
+      t = {}
+      if line:sub(1,1) == commentchar then 
+         iscom = true
+      else
+         for datum in string.gmatch(line, "([^" .. sep .. "]+)") do
+            t[#t + 1] = tonumber(datum)
+         end
+      end
+      if (not iscom) and (#t < _G.math.max(s1, s2)) then -- not enough data on line -> skip the line
+         if f:read() then -- not on the last line -> warn
+            model:warning("Not enough data on line " .. nolines)
+            f:seek("set", current)
+         else
+            break
+         end
+      elseif (not iscom) then
+         i = i + 1
+         xs[i], ys[i] = t[s1], t[s2]
+         if (i == 1) then
+            v0 = ipe.Vector(xs[i], ys[i])
+            v0 = trans*v0
+         else
+            v1 = ipe.Vector(xs[i], ys[i])
+            v1 = trans*v1
+            curve[#curve + 1] = { type="segment", v0, v1 }
+            v0 = v1
+         end
+      end
+   end
+   f:close()
+
+   if i < 2 then 
+      model:warning("Not enough points to plot!")
+      return
+   end
+
+   local graphs = {}
+
+   -- connect points by cubic splines (at least 4 points for spline)
+   if linesstore and cubicstore and i > 3 then
+      local spline= { type="curve", closed=false }
+      local p0x,p1x,p2x,p3x=cubicfit(1,i,i,xs)
+      local p0y,p1y,p2y,p3y=cubicfit(1,i,i,ys)
+      for j=1,i-1 do
+	      spline[#spline+1]={ type=beziername,
+	      trans*ipe.Vector(p0x[j], p0y[j]),
+	      trans*ipe.Vector(p1x[j], p1y[j]),
+	      trans*ipe.Vector(p2x[j], p2y[j]),
+	      trans*ipe.Vector(p3x[j], p3y[j]) }
+      end
+      graphs[#graphs + 1] = ipe.Path(model.attributes, { spline } )
+   elseif linesstore then
+      graphs[#graphs + 1] = ipe.Path(model.attributes, { curve } )
+   end
+
+   if symbolsstore==true then
+      for j=1,i do
+         graphs[#graphs + 1] = ipe.Reference(model.attributes, marknames[symnamesstore], trans*(ipe.Vector(xs[j], ys[j])))
+      end
+   end
+
+   graph = ipe.Group(graphs)
+   model:creation("create plot", graph)
+
+end
+
 -- coordinate system
 function make_axes(model, num)
    same, nxt = line_counter()
@@ -860,6 +1123,7 @@ methods = {
    { label = "Coordinate grid", run=make_axes },
    { label = "Parametric plot", run=curve },
    { label = "Function plot", run=func_plot },
+   { label = "Data plot", run=tab_plot },
 }
 
 ----------------------------------------------------------------------
